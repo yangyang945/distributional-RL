@@ -217,7 +217,7 @@ dPlus = (np.log(S0/K)+(r+sigma*sigma/2)*TimeRemain)/(sigma*TimeRemain**(1/2))
 dMins = (np.log(S0/K)+(r-sigma*sigma/2)*TimeRemain)/(sigma*TimeRemain**(1/2))
 OptionIniP = S0*scipy.stats.norm(0,1).cdf(dPlus)-K*np.exp(-r*TimeRemain)*scipy.stats.norm(0,1).cdf(dMins) 
 #RL
-envGBM = Env(MAX_t,MAX_S,MAX_H,strick_price,start_state,SLowerBd)
+envGBM = Env(MAX_t,MAX_S,MAX_H,K,start_state,SLowerBd)
 QRDQN = AgentQRDQN(envGBM)
 trained_model,loss_vec = run_RL(envGBM,QRDQN,number_of_steps,r,sigma,delta_t,start_state,OptionIniP)
 #model result
