@@ -1,9 +1,4 @@
-# -*- coding: utf-8 -*-
-"""
-Created on Mon Jun 15 21:40:50 2020
 
-@author: Surface-S
-"""
 
 import numpy as np
 import tensorflow as tf
@@ -49,7 +44,6 @@ class Env:
         return reward,new_state
         
     def next_Sv(self,S0,v0,r,sigma,rho,kappa,theta,delta_t):
-        #S = (S+self.SLowerBd)*np.exp((r-sigma*sigma/2)*delta_t+sigma*delta_t**(1/2)*np.random.normal(0,1,1))
         v0 = v0/20 + self.vLowerBd
         randS = np.random.normal(0,1,1)
         randv = rho*randS+np.sqrt(1-rho*rho)*np.random.normal(0,1,1)
@@ -83,7 +77,6 @@ class AgentQRDQN:
         self.MEMORY_POOL = deque(maxlen=self.memory_size)
         self.epsilon = 0.1
         self.gamma = 1
-        #self.tau = np.array([0.1])
         self.tau = np.array([(2*(i-1)+1)/(2*self.quantile_number) for i in range(1, self.quantile_number+1)])
         self.opt = tf.keras.optimizers.Adam(self.learning_rate)
         self.huber_loss = tf.keras.losses.Huber(reduction=tf.keras.losses.Reduction.NONE)
@@ -107,27 +100,14 @@ class AgentQRDQN:
         reward = np.array([data[2] for data in sample])
         next_state = np.array([data[3] for data in sample])
         state_boolean = np.zeros((len(state),self.MAX_t+self.MAX_S+self.MAX_H+self.MAX_v))
-        #next_state_boolean = np.zeros((len(next_state),self.MAX_t+self.MAX_S+self.MAX_H+self.MAX_v))
         for i in range(len(state)):
             state_boolean[i][state[i][0]] = 1
             state_boolean[i][state[i][1]+self.MAX_t] = 1
             state_boolean[i][state[i][2]+self.MAX_t+self.MAX_S] = 1
             state_boolean[i][state[i][3]+self.MAX_t+self.MAX_S+self.MAX_H] = 1
-        #for i in range(len(next_state)):
-         #   next_state_boolean[i][next_state[i][0]] = 1
-          #  next_state_boolean[i][next_state[i][1]+self.MAX_t] = 1
-           # next_state_boolean[i][next_state[i][2]+self.MAX_t+self.MAX_S] = 1
-            #next_state_boolean[i][next_state[i][3]+self.MAX_t+self.MAX_S+self.MAX_H] = 1
-        # calculate bellman target
-        #target_theta = self.q_target.predict(next_state_boolean) # this theta is used to calculate bellman target, shpae is batchSize*actionNumber*quantileNumber
-        #next_action = np.argmax(np.mean(target_theta,axis=2),axis=1) # the action leads to max "mean of quantiles"
         bellman_target = []
         for i in range(self.batch_size):
             bellman_target.append(np.ones(self.quantile_number)*reward[i])
-            #if state[i][0] == self.MAX_t-1: # if this is the last step in one trajectory
-             #   bellman_target.append(np.ones(self.quantile_number)*reward[i])
-            #else:
-             #   bellman_target.append(reward[i]+self.gamma*target_theta[i][next_action[i]])
         bellman_target = tf.constant(bellman_target)
         
         #calculate the theta to be updated
@@ -212,10 +192,9 @@ def run_RL(env,agent,number_of_steps,r,sigma,rho,kappa,theta,delta_t,start_state
         trajectory[state[0]][3] = new_state
         
         if new_state[0]==0:
-          #*********************************************************************************************************************************************************************
             for j in range(env.MAX_t-2,-1,-1):
                 trajectory[j][2] += trajectory[j+1][2]
-          #*********************************************************************************************************************************************************************
+
             for k in range(env.MAX_t):
                 loss = agent.update_MEMORY_POOL(trajectory[k][0],trajectory[k][1],trajectory[k][2],trajectory[k][3])
                 loss_vec = np.append(loss_vec,loss)
