@@ -1,3 +1,6 @@
+#This is the modified Algorithm 3 in the thesis
+#This is used to evaluate the delta-hedging policy, instead of seeking for the optimal policy
+
 import numpy as np
 import tensorflow as tf
 from tensorflow.keras.layers import Input, Dense, Reshape, Softmax
