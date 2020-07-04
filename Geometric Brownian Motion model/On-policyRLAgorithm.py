@@ -1,11 +1,5 @@
-# -*- coding: utf-8 -*-
-"""
-Spyder Editor
+#This is the Algorithm 3 in the thesis
 
-This is a temporary script file.
-"""
-
-#No Bellman
 import numpy as np
 import tensorflow as tf
 from tensorflow.keras.layers import Input, Dense, Reshape, Softmax
