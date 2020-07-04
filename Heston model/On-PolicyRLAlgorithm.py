@@ -1,3 +1,5 @@
+#This is the Algorithm 3 in the thesis
+
 import numpy as np
 import tensorflow as tf
 from tensorflow.keras.layers import Input, Dense, Reshape, Softmax
