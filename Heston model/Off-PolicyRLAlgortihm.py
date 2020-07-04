@@ -1,4 +1,4 @@
-#This is the modified Algorithm 2 in the thesis
+#This is the Algorithm 2 in the thesis
 
 import numpy as np
 import tensorflow as tf
