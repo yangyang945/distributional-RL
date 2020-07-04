@@ -87,7 +87,7 @@ class AgentQRDQN:
             state_boolean[i][state[i][0]] = 1
             state_boolean[i][state[i][1]+self.MAX_t] = 1
             state_boolean[i][state[i][2]+self.MAX_t+self.MAX_S] = 1
-            bellman_target = []
+        bellman_target = []
         for i in range(self.batch_size):
             bellman_target.append(np.ones(self.quantile_number)*reward[i])
         bellman_target = tf.constant(bellman_target)
